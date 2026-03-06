@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaixaCerto — Controle financeiro para autônomos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1DB954;
+    --green-dark: #158a3e;
+    --green-light: #d4f5e1;
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --border: rgba(255,255,255,0.08);
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* GLOW BG */
+  .glow-bg {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(29,185,84,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--green);
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(29,185,84,0.15);
+    color: var(--green);
+    border: 1px solid rgba(29,185,84,0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--green);
+    background: rgba(29,185,84,0.08);
+    border: 1px solid rgba(29,185,84,0.2);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 200;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--green);
+    position: relative;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    animation: fadeDown 0.6s 0.2s ease both;
+  }
+
+  /* FORM */
+  .form-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    animation: fadeDown 0.6s 0.3s ease both;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.4rem;
+    transition: border-color 0.2s;
+  }
+
+  .input-row:focus-within {
+    border-color: rgba(29,185,84,0.5);
+  }
+
+  .input-row input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .input-row input::placeholder { color: var(--muted); }
+
+  .btn-primary {
+    background: var(--green);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-primary:hover { background: #22d65f; }
+  .btn-primary:active { transform: scale(0.97); }
+
+  .form-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* SUCCESS STATE */
+  .success-msg {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--green);
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: rgba(29,185,84,0.1);
+    border: 1px solid rgba(29,185,84,0.3);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+  }
+
+  /* DORES */
+  .pain-section {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .pain-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .pain-card:hover {
+    border-color: rgba(29,185,84,0.3);
+    transform: translateY(-2px);
+  }
+
+  .pain-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .pain-card:hover::before { opacity: 1; }
+
+  .pain-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .pain-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+
+  .pain-card p {
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* FEATURES */
+  .features-section {
+    position: relative;
+    z-index: 1;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .features-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .feature-dot {
+    width: 36px;
+    height: 36px;
+    background: rgba(29,185,84,0.12);
+    border: 1px solid rgba(29,185,84,0.25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .feature-item h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .feature-item p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CTA FINAL */
+  .cta-section {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 560px) {
+    .input-row { flex-direction: column; }
+    .btn-primary { width: 100%; text-align: center; }
+    nav { padding: 1rem 1.25rem; }
+    .hero { padding: 3.5rem 1.25rem 3rem; }
+    .pain-section, .features-inner, .cta-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-bg"></div>
+
+<nav>
+  <div class="logo">Caixa<span>Certo</span></div>
+  <div class="badge">Em breve</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Para autônomos e MEIs</div>
+
+  <h1>Saiba exatamente quanto<br><em>sobrou de verdade</em><br>no seu mês</h1>
+
+  <p class="subtitle">
+    Chega de faturar bem e chegar no fim do mês sem entender pra onde foi o dinheiro.
+    Uma ferramenta simples, feita pra quem trabalha por conta.
+  </p>
+
+  <div class="form-wrap" id="formWrap">
+    <div class="input-row">
+      <input type="email" id="emailInput" placeholder="Seu melhor e-mail" autocomplete="email" />
+      <button class="btn-primary" onclick="handleSubmit()">Quero testar grátis</button>
+    </div>
+    <span class="form-note">🔒 Sem spam. Você só recebe quando o produto estiver pronto.</span>
+    <div class="success-msg" id="successMsg">
+      ✅ Cadastro feito! Você será um dos primeiros a testar.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DORES -->
+<section class="pain-section">
+  <div class="section-label">Você já viveu isso?</div>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <span class="pain-icon">💸</span>
+      <h3>Faturei, mas não sobrou</h3>
+      <p>O mês foi cheio de serviço, mas quando foi ver, o saldo estava no zero.</p>
+    </div>
+    <div class="pain-card">
+      <span class="pain-icon">🤷</span>
+      <h3>Não sei se estou lucrando</h3>
+      <p>Aceita qualquer serviço porque não sabe calcular se vale a pena ou não.</p>
+    </div>
+    <div class="pain-card">
+      <span class="pain-icon">📋</span>
+      <h3>Controle no caderninho</h3>
+      <p>Anotações soltas, planilha bagunçada ou na cabeça mesmo. Sem visão real.</p>
+    </div>
+    <div class="pain-card">
+      <span class="pain-icon">😰</span>
+      <h3>Mês fraco, desespero</h3>
+      <p>Quando os serviços diminuem, não sabe quantos meses consegue se sustentar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="section-label" style="text-align:center">O que o CaixaCerto vai fazer por você</div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-dot">📥</div>
+        <h3>Registre em segundos</h3>
+        <p>Anote entradas e saídas rapidinho pelo celular, sem complicação.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot">📊</div>
+        <h3>Lucro real por serviço</h3>
+        <p>Veja o quanto sobrou depois de material, deslocamento e impostos.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot">📅</div>
+        <h3>Visão do mês inteiro</h3>
+        <p>Entenda seu padrão financeiro e planeje os próximos meses com mais segurança.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot">📄</div>
+        <h3>Relatório para o contador</h3>
+        <p>Exporte um resumo organizado para facilitar a vida na hora do imposto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2>Entre para a lista de acesso antecipado</h2>
+  <p>Quem se cadastrar agora vai testar o produto <strong style="color:var(--green)">de graça</strong> antes do lançamento oficial e ajudar a moldar o que a ferramenta vai ser.</p>
+  <div class="form-wrap" id="formWrap2">
+    <div class="input-row">
+      <input type="email" id="emailInput2" placeholder="Seu e-mail" autocomplete="email" />
+      <button class="btn-primary" onclick="handleSubmit2()">Garantir meu acesso</button>
+    </div>
+    <span class="form-note">Sem cartão de crédito. Sem compromisso.</span>
+    <div class="success-msg" id="successMsg2">
+      ✅ Cadastrado! Até breve. 🚀
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 CaixaCerto · Feito para quem trabalha por conta própria 💚
+</footer>
+
+<script>
+  function handleSubmit() {
+    const email = document.getElementById('emailInput').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('emailInput').style.borderBottom = '2px solid red';
+      document.getElementById('emailInput').focus();
+      return;
+    }
+    document.getElementById('emailInput').parentElement.style.display = 'none';
+    document.querySelector('#formWrap .form-note').style.display = 'none';
+    const msg = document.getElementById('successMsg');
+    msg.style.display = 'flex';
+    // Aqui você integraria com Mailchimp, ConvertKit, Notion API, etc.
+    console.log('Email capturado:', email);
+  }
+
+  function handleSubmit2() {
+    const email = document.getElementById('emailInput2').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('emailInput2').focus();
+      return;
+    }
+    document.getElementById('emailInput2').parentElement.style.display = 'none';
+    document.querySelector('#formWrap2 .form-note').style.display = 'none';
+    const msg = document.getElementById('successMsg2');
+    msg.style.display = 'flex';
+    console.log('Email capturado:', email);
+  }
+
+  // Enter key support
+  document.getElementById('emailInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSubmit();
+  });
+  document.getElementById('emailInput2').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSubmit2();
+  });
+</script>
+
+</body>
+</html>
