@@ -583,81 +583,42 @@
   </footer>
 
   <script>
-    async function handleSubmit() {
-      const email = document.getElementById('emailInput').value.trim();
-      if (!email || !email.includes('@')) {
-        document.getElementById('emailInput').focus();
-        return;
-      }
+    const API_URL = 'https://caixacerto-api.vercel.app/api/subscribe';
 
-      const API_KEY = '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';
-      const LIST_ID = 2;
-
+    async function submitEmail(email, inputEl, formWrapId, noteSelector, successId) {
       try {
-        const response = await fetch('https://api.brevo.com/v3/contacts', {
+        const res = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'api-key': API_KEY
-          },
-          body: JSON.stringify({
-            email: email,
-            listIds: [LIST_ID],
-            updateEnabled: true
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
         });
 
-        if (response.ok || response.status === 204) {
-          // Esconde o formulário e mostra sucesso
-          document.getElementById('emailInput').parentElement.style.display = 'none';
-          document.querySelector('#formWrap .form-note').style.display = 'none';
-          document.getElementById('successMsg').style.display = 'flex';
+        if (res.ok) {
+          inputEl.parentElement.style.display = 'none';
+          document.querySelector(noteSelector).style.display = 'none';
+          document.getElementById(successId).style.display = 'flex';
         } else {
           alert('Erro ao cadastrar. Tente novamente.');
         }
       } catch (err) {
         alert('Erro de conexão. Tente novamente.');
       }
+    }
+
+    async function handleSubmit() {
+      const input = document.getElementById('emailInput');
+      const email = input.value.trim();
+      if (!email || !email.includes('@')) { input.focus(); return; }
+      await submitEmail(email, input, 'formWrap', '#formWrap .form-note', 'successMsg');
     }
 
     async function handleSubmit2() {
-      const email = document.getElementById('emailInput2').value.trim();
-      if (!email || !email.includes('@')) {
-        document.getElementById('emailInput2').focus();
-        return;
-      }
-
-      const API_KEY = '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';
-      const LIST_ID = 2;
-
-      try {
-        const response = await fetch('https://api.brevo.com/v3/contacts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'api-key': API_KEY
-          },
-          body: JSON.stringify({
-            email: email,
-            listIds: [LIST_ID],
-            updateEnabled: true
-          })
-        });
-
-        if (response.ok || response.status === 204) {
-          document.getElementById('emailInput2').parentElement.style.display = 'none';
-          document.querySelector('#formWrap2 .form-note').style.display = 'none';
-          const msg = document.getElementById('successMsg2');
-          msg.style.display = 'flex';
-        } else {
-          alert('Erro ao cadastrar. Tente novamente.');
-        }
-      } catch (err) {
-        alert('Erro de conexão. Tente novamente.');
-      }
+      const input = document.getElementById('emailInput2');
+      const email = input.value.trim();
+      if (!email || !email.includes('@')) { input.focus(); return; }
+      await submitEmail(email, input, 'formWrap2', '#formWrap2 .form-note', 'successMsg2');
     }
 
-    // Enter key support
     document.getElementById('emailInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') handleSubmit();
     });
