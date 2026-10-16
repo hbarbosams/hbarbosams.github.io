@@ -706,8 +706,15 @@
     <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>
   </footer>
 
+  <!-- Armadilha para robôs: campo invisível para pessoas. Não remover. -->
+  <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+    <label for="website">Não preencha este campo</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+  </div>
+
   <script>
     const API_URL = 'https://caixacerto-api.vercel.app/api/subscribe';
+    const PAGE_LOADED_AT = Date.now();
 
     async function submitEmail(email, inputEl, noteSelector, successId) {
       const btn = inputEl.parentElement.querySelector('button');
@@ -716,7 +723,11 @@
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({
+            email,
+            website: document.getElementById('website').value,
+            elapsed: Date.now() - PAGE_LOADED_AT
+          })
         });
 
         if (res.ok) {
@@ -725,7 +736,9 @@
           document.querySelector(noteSelector).style.display = 'none';
           document.getElementById(successId).style.display = 'flex';
         } else {
-          alert('Erro ao cadastrar. Tente novamente.');
+          let msg = 'Erro ao cadastrar. Tente novamente.';
+          try { const data = await res.json(); if (data.error) msg = data.error; } catch { }
+          alert(msg);
         }
       } catch (err) {
         alert('Erro de conexão. Tente novamente.');
