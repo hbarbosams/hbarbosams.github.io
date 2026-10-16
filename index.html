@@ -5,9 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CaixaCerto — Controle financeiro para autônomos</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230d1117'/><rect x='6' y='6' width='52' height='52' rx='10' fill='%23161b22'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='36' fill='%231DB954'>C</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
-    rel="stylesheet">
+  <meta name="description" content="Controle de caixa simples para autônomos e MEIs. Saiba quanto sobrou de verdade no seu mês.">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='2' y='2' width='96' height='96' rx='22' fill='%23161b22' stroke='%2321262d' stroke-width='2'/%3E%3Cpath d='M69.8 30.2 A28 28 0 1 0 69.8 69.8' fill='none' stroke='%231DB954' stroke-width='9' stroke-linecap='round'/%3E%3Cpolyline points='41,51 48,58 62,42' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Syne só no peso 400 (regra da marca). DM Sans pode ir em negrito. -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400&display=swap">
   <style>
     *,
     *::before,
@@ -17,16 +22,35 @@
       padding: 0;
     }
 
+    /* Tokens do design system CaixaCerto */
     :root {
-      --green: #1DB954;
-      --green-dark: #158a3e;
-      --green-light: #d4f5e1;
       --bg: #0d1117;
-      --bg2: #161b22;
-      --border: rgba(255, 255, 255, 0.08);
+      --surface: #161b22;
+      --line: #21262d;
+      --line-strong: #30363d;
+      --ink: #ffffff;
       --text: #e6edf3;
+      --text-soft: #c9d1d9;
       --muted: #8b949e;
-      --white: #ffffff;
+      --brand: #1db954;
+      --brand-hover: #22d65f;
+      --on-brand: #04150a;
+      --brand-tint: #1a3324;
+      --brand-line: #2d6644;
+
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 20px;
+      --space-6: 40px;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 14px;
+      --radius-pill: 999px;
+
+      --font-display: "Syne", "DM Sans", system-ui, sans-serif;
+      --font-sans: "DM Sans", system-ui, sans-serif;
     }
 
     html {
@@ -34,76 +58,89 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-sans);
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      line-height: 1.5;
     }
 
-    /* NOISE TEXTURE */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
+    /* Syne sempre 400, sem negrito falso */
+    h1,
+    h2,
+    h3,
+    .wordmark {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-synthesis: none;
+      text-wrap: balance;
     }
 
-    /* GLOW BG */
-    .glow-bg {
-      position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 500px;
-      background: radial-gradient(ellipse at center, rgba(29, 185, 84, 0.12) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+    a {
+      color: var(--brand);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 3px;
     }
 
     /* NAV */
     nav {
-      position: relative;
-      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: var(--space-3);
       padding: 1.5rem 2rem;
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
     }
 
-    .logo {
-      font-family: 'Syne', sans-serif;
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand svg {
+      width: 32px;
+      height: 32px;
+      flex: none;
+    }
+
+    .wordmark {
       font-size: 1.3rem;
-      color: var(--white);
+      line-height: 1.2;
       letter-spacing: -0.02em;
+      color: var(--ink);
     }
 
-    .logo span {
-      color: var(--green);
+    .wordmark span {
+      color: var(--brand);
     }
 
-    .badge {
+    /* Pílula de prévia (cc-tag) */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--brand-tint);
+      border: 1px solid var(--brand-line);
+      color: var(--brand);
       font-size: 0.7rem;
-      font-weight: 600;
-      background: rgba(29, 185, 84, 0.15);
-      color: var(--green);
-      border: 1px solid rgba(29, 185, 84, 0.3);
-      padding: 0.25rem 0.75rem;
-      border-radius: 100px;
-      letter-spacing: 0.05em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
+      line-height: 1.4;
+      white-space: nowrap;
     }
 
     /* HERO */
     .hero {
-      position: relative;
-      z-index: 1;
       max-width: 760px;
       margin: 0 auto;
       padding: 5rem 2rem 4rem;
@@ -113,14 +150,14 @@
     .hero-tag {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--space-1);
       font-size: 0.8rem;
       font-weight: 500;
-      color: var(--green);
-      background: rgba(29, 185, 84, 0.08);
-      border: 1px solid rgba(29, 185, 84, 0.2);
+      color: var(--brand);
+      background: var(--brand-tint);
+      border: 1px solid var(--brand-line);
       padding: 0.4rem 1rem;
-      border-radius: 100px;
+      border-radius: var(--radius-pill);
       margin-bottom: 2rem;
       animation: fadeDown 0.6s ease both;
     }
@@ -129,7 +166,7 @@
       content: '';
       width: 6px;
       height: 6px;
-      background: var(--green);
+      background: var(--brand);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
@@ -147,20 +184,18 @@
     }
 
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 200;
       font-size: clamp(2.2rem, 6vw, 3.8rem);
       line-height: 1.08;
       letter-spacing: -0.03em;
-      color: var(--white);
+      color: var(--ink);
       margin-bottom: 1.5rem;
       animation: fadeDown 0.6s 0.1s ease both;
     }
 
-    h1 em {
+    h1 em,
+    h2 em {
       font-style: normal;
-      color: var(--green);
-      position: relative;
+      color: var(--brand);
     }
 
     .subtitle {
@@ -177,33 +212,34 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.75rem;
+      gap: var(--space-2);
       animation: fadeDown 0.6s 0.3s ease both;
     }
 
     .input-row {
       display: flex;
-      gap: 0.5rem;
+      gap: var(--space-1);
       width: 100%;
       max-width: 480px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-md);
       padding: 0.4rem;
       transition: border-color 0.2s;
     }
 
     .input-row:focus-within {
-      border-color: rgba(29, 185, 84, 0.5);
+      border-color: var(--brand);
     }
 
     .input-row input {
       flex: 1;
+      min-width: 0;
       background: transparent;
       border: none;
       outline: none;
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: var(--font-sans);
       font-size: 0.95rem;
       padding: 0.6rem 0.75rem;
     }
@@ -212,55 +248,74 @@
       color: var(--muted);
     }
 
+    /* Botão principal (cc-btn) */
     .btn-primary {
-      background: var(--green);
-      color: #000;
-      font-family: 'DM Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 20px;
+      background: var(--brand);
+      color: var(--on-brand);
+      font-family: var(--font-sans);
       font-weight: 600;
       font-size: 0.9rem;
+      line-height: 1.2;
       border: none;
-      padding: 0.7rem 1.4rem;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.2s, transform 0.1s;
+      transition: background 0.15s, transform 0.1s;
     }
 
     .btn-primary:hover {
-      background: #22d65f;
+      background: var(--brand-hover);
     }
 
     .btn-primary:active {
       transform: scale(0.97);
     }
 
+    .btn-primary[disabled] {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
     .form-note {
       font-size: 0.78rem;
       color: var(--muted);
+      line-height: 1.6;
+      max-width: 480px;
     }
 
-    /* SUCCESS STATE */
+    .form-note a {
+      color: var(--text-soft);
+    }
+
     .success-msg {
       display: none;
       align-items: center;
-      gap: 0.5rem;
-      color: var(--green);
+      gap: var(--space-1);
+      color: var(--brand);
       font-weight: 600;
       font-size: 0.95rem;
-      background: rgba(29, 185, 84, 0.1);
-      border: 1px solid rgba(29, 185, 84, 0.3);
+      background: var(--brand-tint);
+      border: 1px solid var(--brand-line);
       padding: 0.75rem 1.5rem;
       border-radius: 10px;
     }
 
-    /* DORES */
-    .pain-section {
-      position: relative;
-      z-index: 1;
+    .success-msg svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+    }
+
+    /* SEÇÕES */
+    .section {
       max-width: 760px;
       margin: 0 auto;
       padding: 4rem 2rem;
-      text-align: center;
     }
 
     .section-label {
@@ -268,127 +323,87 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      line-height: 1.4;
       color: var(--muted);
-      margin-bottom: 1rem;
+      text-align: center;
     }
 
+    .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--brand-tint);
+      border: 1px solid var(--brand-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand);
+      margin-bottom: 0.75rem;
+    }
+
+    .icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* DORES */
     .pain-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
       margin-top: 2rem;
     }
 
     .pain-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
       padding: 1.5rem;
-      text-align: left;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: border-color 0.2s;
     }
 
     .pain-card:hover {
-      border-color: rgba(29, 185, 84, 0.3);
-      transform: translateY(-2px);
+      border-color: var(--brand-line);
     }
 
-    .pain-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--green), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .pain-card:hover::before {
-      opacity: 1;
-    }
-
-    .pain-icon {
-      font-size: 1.6rem;
-      margin-bottom: 0.75rem;
-      display: block;
-    }
-
-    .pain-card h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--white);
+    .pain-card h3,
+    .feature-item h3 {
+      font-size: 1.05rem;
+      line-height: 1.25;
+      color: var(--ink);
       margin-bottom: 0.4rem;
     }
 
-    .pain-card p {
+    .pain-card p,
+    .feature-item p {
       font-size: 0.83rem;
       color: var(--muted);
       line-height: 1.6;
     }
 
-    /* FEATURES */
-    .features-section {
-      position: relative;
-      z-index: 1;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* FUNCIONALIDADES */
+    .features-band {
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
     }
 
-    .features-inner {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
+    .features-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
     }
 
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 2rem;
       margin-top: 2.5rem;
     }
 
-    .feature-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .feature-dot {
-      width: 36px;
-      height: 36px;
-      background: rgba(29, 185, 84, 0.12);
-      border: 1px solid rgba(29, 185, 84, 0.25);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .feature-item h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    .feature-item p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
     /* CTA FINAL */
     .cta-section {
-      position: relative;
-      z-index: 1;
       max-width: 600px;
       margin: 0 auto;
       padding: 5rem 2rem;
@@ -396,41 +411,48 @@
     }
 
     .cta-section h2 {
-      font-family: 'Syne', sans-serif;
       font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 200;
+      line-height: 1.15;
       letter-spacing: -0.02em;
-      color: var(--white);
+      color: var(--ink);
       margin-bottom: 1rem;
     }
 
-    .cta-section p {
+    .cta-section>p {
       color: var(--muted);
       margin-bottom: 2rem;
       font-size: 1rem;
       line-height: 1.7;
     }
 
+    .cta-section>p strong {
+      color: var(--brand);
+      font-weight: 600;
+    }
+
     /* FOOTER */
     footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-1) var(--space-3);
       padding: 2rem;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--line);
       font-size: 0.78rem;
       color: var(--muted);
     }
 
-    /* DIVIDER */
+    footer a {
+      color: var(--text-soft);
+    }
+
     .divider {
       height: 1px;
-      background: var(--border);
+      background: var(--line);
       max-width: 760px;
       margin: 0 auto;
     }
 
-    /* ANIMATIONS */
     @keyframes fadeDown {
       from {
         opacity: 0;
@@ -443,158 +465,253 @@
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
     /* MOBILE */
     @media (max-width: 560px) {
+
+      .pain-grid,
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
       .input-row {
         flex-direction: column;
       }
 
       .btn-primary {
         width: 100%;
-        text-align: center;
       }
 
       nav {
-        padding: 1rem 1.25rem;
+        padding: 1rem;
+      }
+
+      .tag {
+        font-size: 0.62rem;
+        padding: 3px 10px;
       }
 
       .hero {
-        padding: 3.5rem 1.25rem 3rem;
+        padding: 3.5rem 1rem 3rem;
       }
 
-      .pain-section,
-      .features-inner,
+      .section,
       .cta-section {
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
       }
     }
   </style>
 
   <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "yy41oag0ey");
-</script>
+  </script>
 </head>
 
 <body>
 
-  <div class="glow-bg"></div>
-
   <nav>
-    <div class="logo">Caixa<span>Certo</span></div>
-    <div class="badge">Em breve</div>
+    <a class="brand" href="/" aria-label="CaixaCerto, página inicial">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="2" y="2" width="96" height="96" rx="22" fill="#161b22" stroke="#21262d" stroke-width="2" />
+        <path d="M69.8 30.2 A28 28 0 1 0 69.8 69.8" fill="none" stroke="#1DB954" stroke-width="9"
+          stroke-linecap="round" />
+        <polyline points="41,51 48,58 62,42" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="wordmark">Caixa<span>Certo</span></span>
+    </a>
+    <span class="tag">Prévia · em construção</span>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-tag">Para autônomos e MEIs</div>
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-tag">Para autônomos e MEIs</div>
 
-    <h1>Saiba exatamente quanto<br><em>sobrou de verdade</em><br>no seu mês</h1>
+      <h1>Saiba exatamente quanto <em>sobrou</em> de verdade no seu mês</h1>
 
-    <p class="subtitle">
-      Chega de faturar bem e chegar no fim do mês sem entender pra onde foi o dinheiro.
-      Uma ferramenta simples, feita pra quem trabalha por conta.
-    </p>
+      <p class="subtitle">
+        Chega de faturar bem e chegar no fim do mês sem entender pra onde foi o dinheiro.
+        Uma ferramenta simples, feita pra quem trabalha por conta.
+      </p>
 
-    <div class="form-wrap" id="formWrap">
-      <div class="input-row">
-        <input type="email" id="emailInput" placeholder="Seu melhor e-mail" autocomplete="email" />
-        <button class="btn-primary" onclick="handleSubmit()">Quero testar grátis</button>
-      </div>
-      <span class="form-note">🔒 Sem spam. Você só recebe quando o produto estiver pronto.</span>
-      <div class="success-msg" id="successMsg">
-        ✅ Cadastro feito! Você será um dos primeiros a testar.
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- DORES -->
-  <section class="pain-section">
-    <div class="section-label">Você já viveu isso?</div>
-    <div class="pain-grid">
-      <div class="pain-card">
-        <span class="pain-icon">💸</span>
-        <h3>Faturei, mas não sobrou</h3>
-        <p>O mês foi cheio de serviço, mas quando foi ver, o saldo estava no zero.</p>
-      </div>
-      <div class="pain-card">
-        <span class="pain-icon">🤷</span>
-        <h3>Não sei se estou lucrando</h3>
-        <p>Aceita qualquer serviço porque não sabe calcular se vale a pena ou não.</p>
-      </div>
-      <div class="pain-card">
-        <span class="pain-icon">📋</span>
-        <h3>Controle no caderninho</h3>
-        <p>Anotações soltas, planilha bagunçada ou na cabeça mesmo. Sem visão real.</p>
-      </div>
-      <div class="pain-card">
-        <span class="pain-icon">😰</span>
-        <h3>Mês fraco, desespero</h3>
-        <p>Quando os serviços diminuem, não sabe quantos meses consegue se sustentar.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section class="features-section">
-    <div class="features-inner">
-      <div class="section-label" style="text-align:center">O que o CaixaCerto vai fazer por você</div>
-      <div class="features-grid">
-        <div class="feature-item">
-          <div class="feature-dot">📥</div>
-          <h3>Registre em segundos</h3>
-          <p>Anote entradas e saídas rapidinho pelo celular, sem complicação.</p>
+      <div class="form-wrap" id="formWrap">
+        <div class="input-row">
+          <input type="email" id="emailInput" placeholder="Seu melhor e-mail" autocomplete="email"
+            aria-label="Seu e-mail" />
+          <button class="btn-primary" type="button" onclick="handleSubmit()">Quero testar grátis</button>
         </div>
-        <div class="feature-item">
-          <div class="feature-dot">📊</div>
-          <h3>Lucro real por serviço</h3>
-          <p>Veja o quanto sobrou depois de material, deslocamento e impostos.</p>
-        </div>
-        <div class="feature-item">
-          <div class="feature-dot">📅</div>
-          <h3>Visão do mês inteiro</h3>
-          <p>Entenda seu padrão financeiro e planeje os próximos meses com mais segurança.</p>
-        </div>
-        <div class="feature-item">
-          <div class="feature-dot">📄</div>
-          <h3>Relatório para o contador</h3>
-          <p>Exporte um resumo organizado para facilitar a vida na hora do imposto.</p>
+        <p class="form-note">Sem spam. Seu e-mail fica só na lista de espera do CaixaCerto.
+          <a href="/privacidade.html">Política de privacidade</a></p>
+        <div class="success-msg" id="successMsg" role="status">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <polyline points="5 12.5 10 17.5 19 7.5" />
+          </svg>
+          Cadastro feito! Você será um dos primeiros a testar.
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CTA FINAL -->
-  <section class="cta-section">
-    <h2>Entre para a lista de acesso antecipado</h2>
-    <p>Quem se cadastrar agora vai testar o produto <strong style="color:var(--green)">de graça</strong> antes do
-      lançamento oficial e ajudar a moldar o que a ferramenta vai ser.</p>
-    <div class="form-wrap" id="formWrap2">
-      <div class="input-row">
-        <input type="email" id="emailInput2" placeholder="Seu e-mail" autocomplete="email" />
-        <button class="btn-primary" onclick="handleSubmit2()">Garantir meu acesso</button>
+    <div class="divider"></div>
+
+    <!-- DORES -->
+    <section class="section">
+      <div class="section-label">Você já viveu isso?</div>
+      <div class="pain-grid">
+        <div class="pain-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 7 9 13 13 9 21 17" />
+              <polyline points="15 17 21 17 21 11" />
+            </svg></div>
+          <h3>Faturei, mas não sobrou</h3>
+          <p>O mês foi cheio de serviço, mas quando foi ver, o saldo estava no zero.</p>
+        </div>
+        <div class="pain-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6" />
+              <line x1="12" y1="17" x2="12" y2="17.01" />
+            </svg></div>
+          <h3>Não sei se estou lucrando</h3>
+          <p>Aceita qualquer serviço porque não sabe calcular se vale a pena ou não.</p>
+        </div>
+        <div class="pain-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="5" y="3" width="14" height="18" rx="2" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="9" y1="12" x2="15" y2="12" />
+              <line x1="9" y1="16" x2="12" y2="16" />
+            </svg></div>
+          <h3>Controle no caderninho</h3>
+          <p>Anotações soltas, planilha bagunçada ou na cabeça mesmo. Sem visão real.</p>
+        </div>
+        <div class="pain-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <line x1="8" y1="3" x2="8" y2="7" />
+              <line x1="16" y1="3" x2="16" y2="7" />
+              <line x1="12" y1="13" x2="12" y2="16" />
+              <line x1="12" y1="18.5" x2="12" y2="18.51" />
+            </svg></div>
+          <h3>Mês fraco, desespero</h3>
+          <p>Quando os serviços diminuem, não sabe quantos meses consegue se sustentar.</p>
+        </div>
       </div>
-      <span class="form-note">Sem cartão de crédito. Sem compromisso.</span>
-      <div class="success-msg" id="successMsg2">
-        ✅ Cadastrado! Até breve. 🚀
+    </section>
+
+    <!-- FUNCIONALIDADES -->
+    <section class="features-band">
+      <div class="section">
+        <div class="features-head">
+          <div class="section-label">O que o CaixaCerto vai fazer por você</div>
+          <span class="tag">Prévia · em construção</span>
+        </div>
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="6" y="2" width="12" height="20" rx="2" />
+                <line x1="12" y1="8" x2="12" y2="14" />
+                <line x1="9" y1="11" x2="15" y2="11" />
+              </svg></div>
+            <h3>Registre em segundos</h3>
+            <p>Anote entradas e saídas rapidinho pelo celular, sem complicação.</p>
+          </div>
+          <div class="feature-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="6" y1="20" x2="6" y2="12" />
+                <line x1="12" y1="20" x2="12" y2="6" />
+                <line x1="18" y1="20" x2="18" y2="14" />
+              </svg></div>
+            <h3>Lucro real por serviço</h3>
+            <p>Veja o quanto sobrou depois de material, deslocamento e impostos.</p>
+          </div>
+          <div class="feature-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+                <line x1="8" y1="3" x2="8" y2="7" />
+                <line x1="16" y1="3" x2="16" y2="7" />
+              </svg></div>
+            <h3>Visão do mês inteiro</h3>
+            <p>Entenda seu padrão financeiro e planeje os próximos meses com mais segurança.</p>
+          </div>
+          <div class="feature-item">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 3 14 8 19 8" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="15" y2="17" />
+              </svg></div>
+            <h3>Relatório para o contador</h3>
+            <p>Exporte um resumo organizado para facilitar a vida na hora do imposto.</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta-section">
+      <h2>Entre para a lista de acesso antecipado</h2>
+      <p>Quem se cadastrar agora vai testar o produto <strong>de graça</strong> antes do
+        lançamento oficial e ajudar a moldar o que a ferramenta vai ser.</p>
+      <div class="form-wrap" id="formWrap2">
+        <div class="input-row">
+          <input type="email" id="emailInput2" placeholder="Seu e-mail" autocomplete="email"
+            aria-label="Seu e-mail" />
+          <button class="btn-primary" type="button" onclick="handleSubmit2()">Garantir meu acesso</button>
+        </div>
+        <p class="form-note">Sem cartão de crédito. Sem compromisso.
+          <a href="/privacidade.html">Como usamos seu e-mail</a></p>
+        <div class="success-msg" id="successMsg2" role="status">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <polyline points="5 12.5 10 17.5 19 7.5" />
+          </svg>
+          Cadastrado! Até breve.
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    © 2026 CaixaCerto · Feito para quem trabalha por conta própria 💚
+    <span>© 2026 CaixaCerto · Feito para quem trabalha por conta própria</span>
+    <a href="/privacidade.html">Privacidade</a>
+    <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>
   </footer>
 
   <script>
     const API_URL = 'https://caixacerto-api.vercel.app/api/subscribe';
 
-    async function submitEmail(email, inputEl, formWrapId, noteSelector, successId) {
+    async function submitEmail(email, inputEl, noteSelector, successId) {
+      const btn = inputEl.parentElement.querySelector('button');
+      btn.disabled = true;
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
@@ -612,6 +729,8 @@
         }
       } catch (err) {
         alert('Erro de conexão. Tente novamente.');
+      } finally {
+        btn.disabled = false;
       }
     }
 
@@ -619,14 +738,14 @@
       const input = document.getElementById('emailInput');
       const email = input.value.trim();
       if (!email || !email.includes('@')) { input.focus(); return; }
-      await submitEmail(email, input, 'formWrap', '#formWrap .form-note', 'successMsg');
+      await submitEmail(email, input, '#formWrap .form-note', 'successMsg');
     }
 
     async function handleSubmit2() {
       const input = document.getElementById('emailInput2');
       const email = input.value.trim();
       if (!email || !email.includes('@')) { input.focus(); return; }
-      await submitEmail(email, input, 'formWrap2', '#formWrap2 .form-note', 'successMsg2');
+      await submitEmail(email, input, '#formWrap2 .form-note', 'successMsg2');
     }
 
     document.getElementById('emailInput').addEventListener('keydown', e => {

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de privacidade — CaixaCerto</title>
+  <meta name="description" content="Como o CaixaCerto coleta e usa seus dados na lista de espera.">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='2' y='2' width='96' height='96' rx='22' fill='%23161b22' stroke='%2321262d' stroke-width='2'/%3E%3Cpath d='M69.8 30.2 A28 28 0 1 0 69.8 69.8' fill='none' stroke='%231DB954' stroke-width='9' stroke-linecap='round'/%3E%3Cpolyline points='41,51 48,58 62,42' fill='none' stroke='%23ffffff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400&display=swap">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --line: #21262d;
+      --ink: #ffffff;
+      --text: #e6edf3;
+      --text-soft: #c9d1d9;
+      --muted: #8b949e;
+      --brand: #1db954;
+      --font-display: "Syne", "DM Sans", system-ui, sans-serif;
+      --font-sans: "DM Sans", system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    h1,
+    h2,
+    .wordmark {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-synthesis: none;
+      text-wrap: balance;
+    }
+
+    a {
+      color: var(--brand);
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 3px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .wordmark {
+      font-size: 1.3rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .wordmark span {
+      color: var(--brand);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 4rem;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .summary ul {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .summary li {
+      padding-left: 1.25rem;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .summary li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      line-height: 1.25;
+      color: var(--ink);
+      margin: 2.25rem 0 0.75rem;
+    }
+
+    p,
+    li {
+      font-size: 0.95rem;
+    }
+
+    ul+p,
+    p+p {
+      margin-top: 0.75rem;
+    }
+
+    section ul {
+      padding-left: 1.25rem;
+      display: grid;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .updated {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 16px;
+      padding: 2rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 560px) {
+      nav {
+        padding: 1rem;
+      }
+
+      main {
+        padding: 2.5rem 1rem 3rem;
+      }
+    }
+  </style>
+
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "yy41oag0ey");
+  </script>
+</head>
+
+<body>
+
+  <nav>
+    <a class="brand" href="/" aria-label="CaixaCerto, página inicial">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="2" y="2" width="96" height="96" rx="22" fill="#161b22" stroke="#21262d" stroke-width="2" />
+        <path d="M69.8 30.2 A28 28 0 1 0 69.8 69.8" fill="none" stroke="#1DB954" stroke-width="9"
+          stroke-linecap="round" />
+        <polyline points="41,51 48,58 62,42" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="wordmark">Caixa<span>Certo</span></span>
+    </a>
+  </nav>
+
+  <main>
+    <div class="eyebrow">LGPD</div>
+    <h1>Política de privacidade</h1>
+    <p class="lead">Este site serve para montar a lista de espera do CaixaCerto. Aqui está, em linguagem simples, o
+      que é coletado, para quê e como você pede para apagar.</p>
+
+    <div class="summary">
+      <ul>
+        <li>Coletamos <strong>só o seu e-mail</strong>, quando você se cadastra.</li>
+        <li>Usamos o e-mail para a lista de espera e para falar com você sobre o CaixaCerto. Não vendemos nem
+          compartilhamos para propaganda de terceiros.</li>
+        <li>O site mede visitas e cliques com o Microsoft Clarity, para entender o que funciona na página.</li>
+        <li>Para ver, corrigir ou apagar seus dados, escreva para
+          <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>.</li>
+      </ul>
+    </div>
+
+    <section>
+      <h2>Quem cuida dos seus dados</h2>
+      <p>O CaixaCerto é um projeto independente em fase de testes. O responsável pelo tratamento dos dados (o
+        "controlador", nos termos da LGPD, Lei 13.709/2018) pode ser contatado pelo e-mail
+        <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>.</p>
+    </section>
+
+    <section>
+      <h2>O que coletamos</h2>
+      <ul>
+        <li><strong>E-mail:</strong> o endereço que você digita no formulário de cadastro.</li>
+        <li><strong>Dados de navegação:</strong> o Microsoft Clarity registra, de forma automática, como a página
+          é usada: cliques, rolagem, tempo na página, tipo de aparelho e navegador, região aproximada e gravações
+          da sessão. Para isso ele usa cookies.</li>
+      </ul>
+      <p>Não pedimos nome, CPF, telefone nem dados bancários.</p>
+    </section>
+
+    <section>
+      <h2>Para que usamos</h2>
+      <ul>
+        <li>Guardar seu lugar na lista de espera e enviar o e-mail de boas-vindas.</li>
+        <li>Avisar quando o CaixaCerto estiver pronto para testar e convidar para a fase de testes.</li>
+        <li>Fazer perguntas sobre o seu trabalho para construir uma ferramenta que sirva de verdade. Responder é
+          opcional.</li>
+        <li>Entender, com os dados de navegação, quais partes da página funcionam e quais precisam melhorar.</li>
+      </ul>
+      <p>O e-mail é tratado com base no seu <strong>consentimento</strong>, dado no momento do cadastro (art. 7º,
+        I, da LGPD). Os dados de navegação são tratados com base no <strong>legítimo interesse</strong> de
+        melhorar o site (art. 7º, IX), sem identificar você pelo nome.</p>
+    </section>
+
+    <section>
+      <h2>Com quem os dados são compartilhados</h2>
+      <p>Só com os serviços que fazem o site funcionar, cada um com a sua própria política de privacidade:</p>
+      <ul>
+        <li><strong>Brevo:</strong> guarda a lista de e-mails e envia as mensagens.</li>
+        <li><strong>Vercel:</strong> hospeda o sistema que recebe o cadastro.</li>
+        <li><strong>Microsoft Clarity:</strong> mede o uso da página.</li>
+        <li><strong>GitHub Pages:</strong> hospeda este site.</li>
+      </ul>
+      <p>Esses serviços podem guardar dados em servidores fora do Brasil, como na União Europeia e nos Estados
+        Unidos.</p>
+    </section>
+
+    <section>
+      <h2>Por quanto tempo</h2>
+      <p>Seu e-mail fica na lista enquanto o projeto estiver ativo ou até você pedir para sair. Se o CaixaCerto
+        for encerrado, a lista é apagada. Os dados de navegação ficam no Clarity pelo prazo definido pela
+        Microsoft.</p>
+    </section>
+
+    <section>
+      <h2>Seus direitos</h2>
+      <p>Pela LGPD (art. 18), você pode pedir a qualquer momento:</p>
+      <ul>
+        <li>confirmação de que temos dados seus e uma cópia deles;</li>
+        <li>correção de dados errados;</li>
+        <li>exclusão do seu e-mail da lista;</li>
+        <li>revogação do consentimento;</li>
+        <li>informação sobre com quem os dados foram compartilhados.</li>
+      </ul>
+      <p>Basta escrever para <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>. Se não
+        ficar satisfeito com a resposta, você pode recorrer à Autoridade Nacional de Proteção de Dados (ANPD).</p>
+      <p>Para bloquear os cookies de medição, use as configurações de privacidade do seu navegador. O cadastro
+        continua funcionando.</p>
+    </section>
+
+    <p class="updated">Atualizada em 16 de outubro de 2026. Se esta política mudar, a nova versão fica nesta
+      mesma página.</p>
+  </main>
+
+  <footer>
+    <span>© 2026 CaixaCerto</span>
+    <a href="/">Voltar ao início</a>
+    <a href="mailto:contato@caixacerto.app.br">contato@caixacerto.app.br</a>
+  </footer>
+
+</body>
+
+</html>
