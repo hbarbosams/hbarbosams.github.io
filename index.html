@@ -281,6 +281,18 @@
       cursor: wait;
     }
 
+    /* Verificação Cloudflare Turnstile: só aparece quando o visitante precisa interagir */
+    .ts-slot {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ts-slot:empty {
+      display: none;
+    }
+
     .form-note {
       font-size: 0.78rem;
       color: var(--muted);
@@ -558,6 +570,7 @@
             aria-label="Seu e-mail" />
           <button class="btn-primary" type="button" onclick="handleSubmit()">Quero testar grátis</button>
         </div>
+        <div class="ts-slot" id="ts1"></div>
         <p class="form-note">Sem spam. Seu e-mail fica só na lista de espera do CaixaCerto.
           <a href="/privacidade.html">Política de privacidade</a></p>
         <div class="success-msg" id="successMsg" role="status">
@@ -687,6 +700,7 @@
             aria-label="Seu e-mail" />
           <button class="btn-primary" type="button" onclick="handleSubmit2()">Garantir meu acesso</button>
         </div>
+        <div class="ts-slot" id="ts2"></div>
         <p class="form-note">Sem cartão de crédito. Sem compromisso.
           <a href="/privacidade.html">Como usamos seu e-mail</a></p>
         <div class="success-msg" id="successMsg2" role="status">
@@ -716,17 +730,56 @@
     const API_URL = 'https://caixacerto-api.vercel.app/api/subscribe';
     const PAGE_LOADED_AT = Date.now();
 
-    async function submitEmail(email, inputEl, noteSelector, successId) {
+    // Cloudflare Turnstile: confirma que quem cadastra é uma pessoa.
+    // A site key é pública. A secret key fica só na Vercel (TURNSTILE_SECRET_KEY).
+    const TURNSTILE_SITE_KEY = '0x4AAAAAAFZZ29RCDbdmmcCZ';
+    const tsWidgets = {};
+
+    window.onTurnstileLoad = function () {
+      for (const id of ['ts1', 'ts2']) {
+        tsWidgets[id] = turnstile.render('#' + id, {
+          sitekey: TURNSTILE_SITE_KEY,
+          theme: 'dark',
+          language: 'pt-br',
+          size: 'flexible',
+          appearance: 'interaction-only',
+          'refresh-expired': 'auto'
+        });
+      }
+    };
+
+    function getTurnstileToken(id) {
+      if (!window.turnstile || tsWidgets[id] === undefined) return '';
+      return turnstile.getResponse(tsWidgets[id]) || '';
+    }
+
+    function resetTurnstile(id) {
+      if (window.turnstile && tsWidgets[id] !== undefined) turnstile.reset(tsWidgets[id]);
+    }
+
+    // A verificação roda sozinha ao abrir a página. Se o clique vier antes de ela terminar, espera até 8 s.
+    async function waitForTurnstileToken(id) {
+      for (let i = 0; i < 40; i++) {
+        const token = getTurnstileToken(id);
+        if (token) return token;
+        await new Promise(r => setTimeout(r, 200));
+      }
+      return '';
+    }
+
+    async function submitEmail(email, inputEl, noteSelector, successId, tsId) {
       const btn = inputEl.parentElement.querySelector('button');
       btn.disabled = true;
       try {
+        const turnstileToken = await waitForTurnstileToken(tsId);
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email,
             website: document.getElementById('website').value,
-            elapsed: Date.now() - PAGE_LOADED_AT
+            elapsed: Date.now() - PAGE_LOADED_AT,
+            turnstileToken
           })
         });
 
@@ -735,12 +788,15 @@
           inputEl.parentElement.style.display = 'none';
           document.querySelector(noteSelector).style.display = 'none';
           document.getElementById(successId).style.display = 'flex';
+          document.getElementById(tsId).style.display = 'none';
         } else {
+          resetTurnstile(tsId); // o token só vale uma vez
           let msg = 'Erro ao cadastrar. Tente novamente.';
           try { const data = await res.json(); if (data.error) msg = data.error; } catch { }
           alert(msg);
         }
       } catch (err) {
+        resetTurnstile(tsId);
         alert('Erro de conexão. Tente novamente.');
       } finally {
         btn.disabled = false;
@@ -751,14 +807,14 @@
       const input = document.getElementById('emailInput');
       const email = input.value.trim();
       if (!email || !email.includes('@')) { input.focus(); return; }
-      await submitEmail(email, input, '#formWrap .form-note', 'successMsg');
+      await submitEmail(email, input, '#formWrap .form-note', 'successMsg', 'ts1');
     }
 
     async function handleSubmit2() {
       const input = document.getElementById('emailInput2');
       const email = input.value.trim();
       if (!email || !email.includes('@')) { input.focus(); return; }
-      await submitEmail(email, input, '#formWrap2 .form-note', 'successMsg2');
+      await submitEmail(email, input, '#formWrap2 .form-note', 'successMsg2', 'ts2');
     }
 
     document.getElementById('emailInput').addEventListener('keydown', e => {
@@ -768,6 +824,8 @@
       if (e.key === 'Enter') handleSubmit2();
     });
   </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async
+    defer></script>
 
 </body>
 
