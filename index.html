@@ -203,8 +203,106 @@
       color: var(--muted);
       line-height: 1.7;
       max-width: 520px;
-      margin: 0 auto 2.5rem;
+      margin: 0 auto 2rem;
       animation: fadeDown 0.6s 0.2s ease both;
+    }
+
+    /* Prévia do produto no topo: mesma tela do slide 3 do carrossel do anúncio */
+    .preview {
+      max-width: 400px;
+      margin: 0 auto 2rem;
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      animation: fadeDown 0.6s 0.25s ease both;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+
+    .preview-head small {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .preview-title {
+      font-weight: 700;
+      color: var(--ink);
+      padding-bottom: var(--space-1);
+    }
+
+    .preview dl div {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+
+    .preview dt {
+      color: var(--muted);
+    }
+
+    .preview dd {
+      color: var(--text);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .preview-profit {
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .preview-profit span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .preview-profit strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-synthesis: none;
+      font-size: 2.2rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--brand);
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    .preview-bar {
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--line);
+      overflow: hidden;
+      margin-bottom: 0.4rem;
+    }
+
+    .preview-bar div {
+      width: 62%;
+      height: 100%;
+      background: var(--brand);
+    }
+
+    .form-benefit {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+      max-width: 480px;
+    }
+
+    .form-benefit strong {
+      color: var(--brand);
+      font-weight: 600;
     }
 
     /* FORM */
@@ -265,6 +363,7 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       white-space: nowrap;
+      text-decoration: none;
       transition: background 0.15s, transform 0.1s;
     }
 
@@ -371,11 +470,21 @@
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
       padding: 1.5rem;
-      transition: border-color 0.2s;
     }
 
-    .pain-card:hover {
-      border-color: var(--brand-line);
+    /* Botão repetido no meio da página: leva ao formulário do topo */
+    .section-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .section-cta p {
+      color: var(--text-soft);
+      font-size: 0.95rem;
     }
 
     .pain-card h3,
@@ -516,7 +625,26 @@
       }
 
       .hero {
-        padding: 3.5rem 1rem 3rem;
+        padding: 2rem 1rem 3rem;
+      }
+
+      .hero-tag {
+        margin-bottom: 1.25rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .preview {
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
       }
 
       .section,
@@ -557,14 +685,43 @@
     <section class="hero">
       <div class="hero-tag">Para autônomos e MEIs</div>
 
-      <h1>Saiba exatamente quanto <em>sobrou</em> de verdade no seu mês</h1>
+      <h1>Você sabe quanto <em>lucrou</em> no seu último serviço?</h1>
 
-      <p class="subtitle">
-        Chega de faturar bem e chegar no fim do mês sem entender pra onde foi o dinheiro.
-        Uma ferramenta simples, feita pra quem trabalha por conta.
-      </p>
+      <p class="subtitle">Não quanto recebeu: quanto sobrou depois de material, gasolina e imposto.</p>
+
+      <figure class="preview" aria-label="Prévia do CaixaCerto: lucro de um serviço">
+        <div class="preview-head">
+          <span class="tag">Prévia · em construção</span>
+          <small>valores de exemplo</small>
+        </div>
+        <div class="preview-title">Instalação elétrica</div>
+        <dl>
+          <div>
+            <dt>Recebido</dt>
+            <dd>+ R$ 800,00</dd>
+          </div>
+          <div>
+            <dt>Material</dt>
+            <dd>− R$ 260,00</dd>
+          </div>
+          <div>
+            <dt>Deslocamento</dt>
+            <dd>− R$ 45,00</dd>
+          </div>
+        </dl>
+        <div class="preview-profit">
+          <span>Lucro do serviço</span>
+          <strong>R$ 495,00</strong>
+          <div class="preview-bar">
+            <div></div>
+          </div>
+          <span>62% do que você recebeu ficou com você</span>
+        </div>
+      </figure>
 
       <div class="form-wrap" id="formWrap">
+        <p class="form-benefit">Deixe seu e-mail: você usa <strong>grátis</strong> durante a fase de testes e
+          recebe um aviso quando abrir.</p>
         <div class="input-row">
           <input type="email" id="emailInput" placeholder="Seu melhor e-mail" autocomplete="email"
             aria-label="Seu e-mail" />
@@ -632,6 +789,10 @@
           <h3>Mês fraco, desespero</h3>
           <p>Quando os serviços diminuem, não sabe quantos meses consegue se sustentar.</p>
         </div>
+      </div>
+      <div class="section-cta">
+        <p>Se você se viu em algum desses, entre na lista de espera.</p>
+        <a class="btn-primary" href="#formWrap" id="ctaMeio">Quero testar grátis</a>
       </div>
     </section>
 
@@ -787,6 +948,8 @@
           if (window.clarity) clarity('event', 'signup');
           inputEl.parentElement.style.display = 'none';
           document.querySelector(noteSelector).style.display = 'none';
+          const benefit = inputEl.closest('.form-wrap').querySelector('.form-benefit');
+          if (benefit) benefit.style.display = 'none';
           document.getElementById(successId).style.display = 'flex';
           document.getElementById(tsId).style.display = 'none';
         } else {
@@ -822,6 +985,15 @@
     });
     document.getElementById('emailInput2').addEventListener('keydown', e => {
       if (e.key === 'Enter') handleSubmit2();
+    });
+
+    // Botão do meio da página: rola até o formulário do topo e já abre o campo de e-mail.
+    document.getElementById('ctaMeio').addEventListener('click', e => {
+      e.preventDefault();
+      if (window.clarity) clarity('event', 'cta_meio');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document.getElementById('formWrap').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      document.getElementById('emailInput').focus({ preventScroll: true });
     });
   </script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async
